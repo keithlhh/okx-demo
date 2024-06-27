@@ -62,7 +62,7 @@ function App() {
       const strData = JSON.stringify(data);
       const test = new Date().getMinutes();
       if (strData !== prev) {
-        if (test % 10 === 0) {
+        if (test %  5 == 0) {
           axios.post('https://api.telegram.org/bot7456345325:AAGydyNYEeAXeNmJrxYmHY5zT3iNqlR6ycI/sendMessage', {
           chat_id: '1604598018',
           text: new Date() + ' ' + '正在运行中...',
