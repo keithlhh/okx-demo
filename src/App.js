@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Table } from "antd";
 import dayjs from "dayjs";
-import { useRequest } from 'ahooks';
+import { useRequest } from "ahooks";
 
 const query = window.location.search;
-const shouldPollingInterval = query.indexOf('pollingInterval') > -1;
+const shouldPollingInterval = query.indexOf("pollingInterval") > -1;
 
 function App() {
   const columns = [
@@ -52,33 +52,42 @@ function App() {
   ];
   const [recordData, setRecordData] = useState([]);
   const [curData, setCurData] = useState([]);
-  const [prev, setPrev] = useState('');
-  const {run} = useRequest(() => {
-    axios
-    .get("https://okx-info-service.vercel.app/api/positions")
-    .then((res) => {
-      console.log(res?.data?.data, "238938988");
-      const data = res?.data?.data;
-      const strData = JSON.stringify(data);
-      const test = new Date().getMinutes();
-      if (strData !== prev) {
-        if (test %  5 == 0) {
-          axios.post('https://api.telegram.org/bot7456345325:AAGydyNYEeAXeNmJrxYmHY5zT3iNqlR6ycI/sendMessage', {
-          chat_id: '1604598018',
-          text: new Date() + ' ' + '正在运行中...',
-        })
-        }
-        setPrev(strData);
-        axios.post('https://api.telegram.org/bot7456345325:AAGydyNYEeAXeNmJrxYmHY5zT3iNqlR6ycI/sendMessage', {
-          chat_id: '-4259724953',
-          text: strData,
-        })
-      }
-    });
-  }, {
-    pollingInterval: 5000,
-    manual: true
-  }) 
+  const [prev, setPrev] = useState("");
+  const { run } = useRequest(
+    () => {
+      axios
+        .get("https://okx-info-service.vercel.app/api/positions")
+        .then((res) => {
+          console.log(res?.data?.data, "238938988");
+          const data = res?.data?.data;
+          const strData = JSON.stringify(data);
+          const test = new Date().getMinutes();
+          if (test % 5 == 0) {
+            axios.post(
+              "https://api.telegram.org/bot7456345325:AAGydyNYEeAXeNmJrxYmHY5zT3iNqlR6ycI/sendMessage",
+              {
+                chat_id: "1604598018",
+                text: new Date() + " " + "正在运行中...",
+              }
+            );
+          }
+          if (strData !== prev) {
+            setPrev(strData);
+            axios.post(
+              "https://api.telegram.org/bot7456345325:AAGydyNYEeAXeNmJrxYmHY5zT3iNqlR6ycI/sendMessage",
+              {
+                chat_id: "-4259724953",
+                text: strData,
+              }
+            );
+          }
+        });
+    },
+    {
+      pollingInterval: 5000,
+      manual: true,
+    }
+  );
   useEffect(() => {
     if (shouldPollingInterval) {
       run();
@@ -89,11 +98,12 @@ function App() {
         console.log(res?.data?.data, "kkkkkkk");
         setCurData(res?.data?.data?.posData);
       });
-    axios.get("https://okx-info-service.vercel.app/api/trade-records?limit=100")
-    .then((res) => {
-      console.log(res?.data?.data, "238938988");
-      setRecordData(res?.data?.data);
-    });
+    axios
+      .get("https://okx-info-service.vercel.app/api/trade-records?limit=100")
+      .then((res) => {
+        console.log(res?.data?.data, "238938988");
+        setRecordData(res?.data?.data);
+      });
   }, []);
   return (
     <div className="App">
