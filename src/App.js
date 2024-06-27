@@ -59,6 +59,7 @@ function App() {
       <Table dataSource={curData} />
       <h3>历史记录</h3>
       <Table columns={columns} dataSource={recordData} />
+      <div style={{paddingBottom: 100}}>{JSON.stringify(curData)}</div>
     </div>
   );
 }
