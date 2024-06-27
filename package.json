@@ -4,6 +4,7 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^14.4.3",
+    "ahooks": "^3.8.0",
     "antd": "^5.18.3",
     "axios": "^1.7.2",
     "dayjs": "^1.11.11",

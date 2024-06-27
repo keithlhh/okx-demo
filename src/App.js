@@ -4,6 +4,11 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Table } from "antd";
 import dayjs from "dayjs";
+import { useRequest } from 'ahooks';
+
+const query = window.location.search;
+const shouldPollingInterval = query.indexOf('pollingInterval') > -1;
+
 function App() {
   const columns = [
     {
@@ -47,30 +52,59 @@ function App() {
   ];
   const [recordData, setRecordData] = useState([]);
   const [curData, setCurData] = useState([]);
-  useEffect(() => {
+  const [prev, setPrev] = useState('');
+  const {run} = useRequest(() => {
     axios
-      .get("https://okx-info-service.vercel.app/api/trade-records?limit=100")
-      .then((res) => {
-        console.log(res?.data?.data, "238938988");
-        setRecordData(res?.data?.data);
-      });
+    .get("https://okx-info-service.vercel.app/api/positions")
+    .then((res) => {
+      console.log(res?.data?.data, "238938988");
+      const data = res?.data?.data;
+      const strData = JSON.stringify(data);
+      const test = new Date().getMinutes();
+      if (strData !== prev) {
+        if (test % 10 === 0) {
+          axios.post('https://api.telegram.org/bot7456345325:AAGydyNYEeAXeNmJrxYmHY5zT3iNqlR6ycI/sendMessage', {
+          chat_id: '1604598018',
+          text: new Date() + ' ' + '正在运行中...',
+        })
+        }
+        setPrev(strData);
+        axios.post('https://api.telegram.org/bot7456345325:AAGydyNYEeAXeNmJrxYmHY5zT3iNqlR6ycI/sendMessage', {
+          chat_id: '-4259724953',
+          text: strData,
+        })
+      }
+    });
+  }, {
+    pollingInterval: 5000,
+    manual: true
+  }) 
+  useEffect(() => {
+    if (shouldPollingInterval) {
+      run();
+    }
     axios
       .get("https://okx-info-service.vercel.app/api/positions")
       .then((res) => {
         console.log(res?.data?.data, "kkkkkkk");
-        setCurData(res?.data?.data);
+        setCurData(res?.data?.data?.posData);
       });
+    axios.get("https://okx-info-service.vercel.app/api/trade-records?limit=100")
+    .then((res) => {
+      console.log(res?.data?.data, "238938988");
+      setRecordData(res?.data?.data);
+    });
   }, []);
   return (
     <div className="App">
       <h3>当前持仓</h3>
       <Table
+        empty="暂无持仓"
         pagination={{
           defaultPageSize: 100,
           showSizeChanger: true,
           pageSizeOptions: ["10", "20", "50", "100"],
         }}
-        empty={"hello"}
         dataSource={curData}
       />
       <h3>历史记录</h3>
