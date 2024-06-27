@@ -54,7 +54,7 @@ function App() {
     })
   }, [])
   return (
-    <div style={{width: '100vw'}} className="App" style={{ padding: '50px' }}>
+    <div className="App">
       <h3>当前持仓</h3>
       <Table dataSource={curData} />
       <h3>历史记录</h3>
