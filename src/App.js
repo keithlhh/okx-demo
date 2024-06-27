@@ -43,15 +43,22 @@ function App() {
     }
   ]
   const [recordData, setRecordData] = useState([]);
+  const [curData, setCurData] = useState([]);
   useEffect(() => {
     axios.get('https://okx-info-service.vercel.app/api/trade-records').then((res) => {
       console.log(res?.data?.data, '238938988')
       setRecordData(res?.data?.data)
     })
+    axios.get('https://okx-info-service.vercel.app/api/positions').then((res) => {
+      console.log(res?.data?.data, 'kkkkkkk')
+      setCurData(res?.data?.data)
+    })
   }, [])
   return (
-    <div className="App">
-      <h1>历史记录</h1>
+    <div className="App" style={{ padding: '50px' }}>
+      <h3>当前持仓</h3>
+      <Table dataSource={curData} />
+      <h3>历史记录</h3>
       <Table columns={columns} dataSource={recordData} />
     </div>
   );
