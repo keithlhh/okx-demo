@@ -1,10 +1,6 @@
 import logo from './logo.svg';
-import './App.css';
-import {useEffect} from 'React'       
-function App() {  
-  useEffect(() => {
-    console.log('hello useeffect');   
-  }, []);             
+import './App.css';     
+function App() {        
   return (
     <div className="App">
      hello demo
