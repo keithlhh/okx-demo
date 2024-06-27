@@ -11,9 +11,8 @@ function App() {
       dataIndex: 'nickName',
     },
     {
-      title: '币总',
+      title: '币种',
       dataIndex: 'baseName',
-      key: 'price',
     },
     {
       title: '类型',
