@@ -96,7 +96,7 @@ function App() {
       .get("https://okx-info-service.vercel.app/api/positions")
       .then((res) => {
         console.log(res?.data?.data, "kkkkkkk");
-        setCurData(res?.data?.data?.posData);
+        setCurData(res?.data?.data?.[0].posData);
       });
     axios
       .get("https://okx-info-service.vercel.app/api/trade-records?limit=100")
@@ -109,6 +109,42 @@ function App() {
     <div className="App">
       <h3>当前持仓</h3>
       <Table
+        columns={[
+          {
+            title: "币种",
+            dataIndex: "instId",
+          },
+          {
+            title: "杠杆",
+            dataIndex: "lever",
+          },
+          {
+            title: "类型",
+            dataIndex: "posSide",
+            render: (_, { posSide, side }) => {
+              if (posSide === "long") {
+                return <div style={{ color: "green" }}>做多</div>;
+              } else if (posSide === "short") {
+                return <div style={{ color: "green" }}>做空</div>;
+              }
+            },
+          },
+          {
+            title: "均价",
+            dataIndex: "avgPx",
+          },
+          {
+            title: "时间",
+            dataIndex: "cTime",
+            render: (_) => {
+              return (
+                new Date(Number(_)).toLocaleDateString() +
+                " " +
+                new Date(Number(_)).toLocaleTimeString()
+              );
+            },
+          },
+        ]}
         empty="暂无持仓"
         pagination={{
           defaultPageSize: 100,
