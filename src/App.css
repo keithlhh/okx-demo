@@ -36,3 +36,9 @@
     transform: rotate(360deg);
   }
 }
+
+.okx-table {
+  .ant-table-cell {
+    padding: 3px !important;
+  }
+}

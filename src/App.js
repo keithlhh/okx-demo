@@ -24,13 +24,13 @@ function App() {
       dataIndex: "side",
       render: (_, { posSide, side }) => {
         if (posSide === "long" && side === "buy") {
-          return <div style={{ color: "green" }}>做多</div>;
+          return <div style={{ color: "green", whiteSpace: 'nowrap' }}>做多</div>;
         } else if (posSide === "long" && side === "sell") {
-          return <div style={{ color: "blue" }}>平多</div>;
+          return <div style={{ color: "blue", whiteSpace: 'nowrap' }}>平多</div>;
         } else if (posSide === "short" && side === "sell") {
-          return <div style={{ color: "green" }}>做空</div>;
+          return <div style={{ color: "green", whiteSpace: 'nowrap' }}>做空</div>;
         } else if (posSide === "short" && side === "buy") {
-          return <div style={{ color: "blue" }}>平空</div>;
+          return <div style={{ color: "blue", whiteSpace: 'nowrap' }}>平空</div>;
         }
       },
     },
@@ -50,6 +50,42 @@ function App() {
       },
     },
   ];
+  const positionColumns =[
+    {
+      title: "币种",
+      dataIndex: "instId",
+    },
+    {
+      title: "杠杆",
+      dataIndex: "lever",
+    },
+    {
+      title: "类型",
+      dataIndex: "posSide",
+      render: (_, { posSide, side }) => {
+        if (posSide === "long") {
+          return <div style={{ color: "green", whiteSpace: "nowrap" }}>做多</div>;
+        } else if (posSide === "short") {
+          return <div style={{ color: "green", whiteSpace: "nowrap" }}>做空</div>;
+        }
+      },
+    },
+    {
+      title: "均价",
+      dataIndex: "avgPx",
+    },
+    {
+      title: "时间",
+      dataIndex: "cTime",
+      render: (_) => {
+        return (
+          new Date(Number(_)).toLocaleDateString() +
+          " " +
+          new Date(Number(_)).toLocaleTimeString()
+        );
+      },
+    },
+  ]
   const [recordData, setRecordData] = useState([]);
   const [curData, setCurData] = useState([]);
   const [prev, setPrev] = useState("");
@@ -109,43 +145,9 @@ function App() {
     <div className="App">
       <h3>当前持仓</h3>
       <Table
-        columns={[
-          {
-            title: "币种",
-            dataIndex: "instId",
-          },
-          {
-            title: "杠杆",
-            dataIndex: "lever",
-          },
-          {
-            title: "类型",
-            dataIndex: "posSide",
-            render: (_, { posSide, side }) => {
-              if (posSide === "long") {
-                return <div style={{ color: "green" }}>做多</div>;
-              } else if (posSide === "short") {
-                return <div style={{ color: "green" }}>做空</div>;
-              }
-            },
-          },
-          {
-            title: "均价",
-            dataIndex: "avgPx",
-          },
-          {
-            title: "时间",
-            dataIndex: "cTime",
-            render: (_) => {
-              return (
-                new Date(Number(_)).toLocaleDateString() +
-                " " +
-                new Date(Number(_)).toLocaleTimeString()
-              );
-            },
-          },
-        ]}
-        empty="暂无持仓"
+        className="okx-table"
+        columns={positionColumns}
+        empty={<div>暂无持仓</div>}
         pagination={{
           defaultPageSize: 100,
           showSizeChanger: true,
@@ -155,6 +157,7 @@ function App() {
       />
       <h3>历史记录</h3>
       <Table
+        className="okx-table"
         pagination={{
           defaultPageSize: 100,
           showSizeChanger: true,
