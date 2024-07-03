@@ -37,8 +37,10 @@
   }
 }
 
-.okx-table {
-  .ant-table-cell {
-    padding: 3px !important;
+@media screen and (max-width: 768px) {
+  .okx-table {
+    .ant-table-cell {
+      padding: 3px !important;
+    }
   }
 }
