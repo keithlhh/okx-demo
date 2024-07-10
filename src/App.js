@@ -5,8 +5,10 @@ import axios from "axios";
 import { Table } from "antd";
 import dayjs from "dayjs";
 import { useRequest } from "ahooks";
+import qs from 'query-string';
 
 const query = window.location.search;
+const queryObj = qs.parse(query);
 const shouldPollingInterval = query.indexOf("pollingInterval") > -1;
 
 function App() {
@@ -27,10 +29,12 @@ function App() {
           return <div style={{ color: "green", whiteSpace: 'nowrap' }}>做多</div>;
         } else if (posSide === "long" && side === "sell") {
           return <div style={{ color: "blue", whiteSpace: 'nowrap' }}>平多</div>;
-        } else if (posSide === "short" && side === "sell") {
-          return <div style={{ color: "green", whiteSpace: 'nowrap' }}>做空</div>;
-        } else if (posSide === "short" && side === "buy") {
+        } else if ((posSide === "short") && side === "sell") {
+          return <div style={{ color: "red", whiteSpace: 'nowrap' }}>做空</div>;
+        } else if ((posSide === "short") && side === "buy") {
           return <div style={{ color: "blue", whiteSpace: 'nowrap' }}>平空</div>;
+        } else {
+          return '-'
         }
       },
     },
@@ -88,6 +92,7 @@ function App() {
   ]
   const [recordData, setRecordData] = useState([]);
   const [curData, setCurData] = useState([]);
+  const [curDataV2, setCurDataV2] = useState([]);
   const [prev, setPrev] = useState("");
   const { run } = useRequest(
     () => {
@@ -129,21 +134,34 @@ function App() {
       run();
     }
     axios
-      .get("https://okx-info-service.vercel.app/api/positions")
+      .get("https://okx-info-service.vercel.app/api/positions", {
+        params: queryObj
+      })
       .then((res) => {
-        console.log(res?.data?.data, "kkkkkkk");
-        setCurData(res?.data?.data?.[0].posData);
+        console.log(res?.data?.data, "kkkkkkk1111");
+        setCurData(res?.data?.data);
+      });
+      axios
+        .get("https://okx-info-service.vercel.app/api/positions-v2", {
+        params: queryObj
+      })
+      .then((res) => {
+        console.log(res?.data?.data?.[0]?.posData, "kkkkkkk2222");
+        setCurDataV2(res?.data?.data?.[0]?.posData);
       });
     axios
-      .get("https://okx-info-service.vercel.app/api/trade-records?limit=100")
+      .get("https://okx-info-service.vercel.app/api/trade-records?limit=100", {
+        params: queryObj
+      })
       .then((res) => {
         console.log(res?.data?.data, "238938988");
         setRecordData(res?.data?.data);
       });
   }, []);
+
   return (
     <div className="App">
-      <h3>当前持仓</h3>
+      <h3>当前持仓V1</h3>
       <Table
         className="okx-table"
         columns={positionColumns}
@@ -154,6 +172,18 @@ function App() {
           pageSizeOptions: ["10", "20", "50", "100"],
         }}
         dataSource={curData}
+      />
+      <h3>当前持仓V2</h3>
+      <Table
+        className="okx-table"
+        columns={positionColumns}
+        empty={<div>暂无持仓</div>}
+        pagination={{
+          defaultPageSize: 100,
+          showSizeChanger: true,
+          pageSizeOptions: ["10", "20", "50", "100"],
+        }}
+        dataSource={curDataV2}
       />
       <h3>历史记录</h3>
       <Table
