@@ -14,15 +14,25 @@ const shouldPollingInterval = query.indexOf("pollingInterval") > -1;
 function App() {
   const columns = [
     {
-      title: "用户",
-      dataIndex: "nickName",
-    },
-    {
       title: "币种",
       dataIndex: "instId",
       render: (_, { instId }) => {
-        return instId.split("-")[0];
+        const coionType = instId.split("-")[0];
+        if (coionType === "BTC") {
+          return <div>🦞{coionType}</div>
+        } else if (coionType === "ETH") {
+          return <div>🦀️{coionType}</div>
+        } else {
+          return <div>{coionType}</div>;
+        }
       },
+    },
+    {
+      title: "杠杆",
+      dataIndex: "lever",
+      render: (_) => {
+        return Number(_)
+      }
     },
     {
       title: "类型",
