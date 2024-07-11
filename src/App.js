@@ -5,7 +5,7 @@ import axios from "axios";
 import { Table } from "antd";
 import dayjs from "dayjs";
 import { useRequest } from "ahooks";
-import qs from 'query-string';
+import qs from "query-string";
 
 const query = window.location.search;
 const queryObj = qs.parse(query);
@@ -19,11 +19,26 @@ function App() {
       render: (_, { instId }) => {
         const coionType = instId.split("-")[0];
         if (coionType === "BTC") {
-          return <div style={{display: 'flex'}}><div style={{width: 20}}>🦞</div>{coionType}</div>
+          return (
+            <div style={{ display: "flex" }}>
+              <div style={{ width: 20 }}>🦞</div>
+              {coionType}
+            </div>
+          );
         } else if (coionType === "ETH") {
-          return <div style={{display: 'flex'}}><div style={{width: 20}}>🦀️</div>{coionType}</div>
+          return (
+            <div style={{ display: "flex" }}>
+              <div style={{ width: 20 }}>🦀️</div>
+              {coionType}
+            </div>
+          );
         } else {
-          return <div style={{display: 'flex'}}><div style={{width: 20}}></div>{coionType}</div>;
+          return (
+            <div style={{ display: "flex" }}>
+              <div style={{ width: 20 }}></div>
+              {coionType}
+            </div>
+          );
         }
       },
     },
@@ -31,23 +46,29 @@ function App() {
       title: "杠杆",
       dataIndex: "lever",
       render: (_) => {
-        return Number(_)
-      }
+        return Number(_);
+      },
     },
     {
       title: "类型",
       dataIndex: "side",
       render: (_, { posSide, side }) => {
         if (posSide === "long") {
-          return <div style={{ color: "green", whiteSpace: 'nowrap' }}>做多</div>;
+          return (
+            <div style={{ color: "green", whiteSpace: "nowrap" }}>做多</div>
+          );
         } else if (posSide === "long" && side === "sell") {
-          return <div style={{ color: "blue", whiteSpace: 'nowrap' }}>平多</div>;
+          return (
+            <div style={{ color: "blue", whiteSpace: "nowrap" }}>平多</div>
+          );
         } else if (posSide === "short") {
-          return <div style={{ color: "red", whiteSpace: 'nowrap' }}>做空</div>;
-        } else if ((posSide === "short") && side === "buy") {
-          return <div style={{ color: "blue", whiteSpace: 'nowrap' }}>平空</div>;
+          return <div style={{ color: "red", whiteSpace: "nowrap" }}>做空</div>;
+        } else if (posSide === "short" && side === "buy") {
+          return (
+            <div style={{ color: "blue", whiteSpace: "nowrap" }}>平空</div>
+          );
         } else {
-          return '-'
+          return "-";
         }
       },
     },
@@ -63,13 +84,17 @@ function App() {
       title: "收益",
       dataIndex: "closeUplRatio",
       render: (ratio) => {
-        ratio = Math.floor(ratio*10000)/100
+        ratio = Math.floor(ratio * 10000) / 100;
         if (ratio >= 0) {
-          return <div style={{ color: "green", whiteSpace: 'nowrap' }}>{ratio}%</div>;
+          return (
+            <div style={{ color: "green", whiteSpace: "nowrap" }}>{ratio}%</div>
+          );
         } else {
-          return <div style={{ color: "red", whiteSpace: 'nowrap' }}>{ratio}%</div>;
+          return (
+            <div style={{ color: "red", whiteSpace: "nowrap" }}>{ratio}%</div>
+          );
         }
-      }
+      },
     },
     {
       title: "时间",
@@ -83,7 +108,7 @@ function App() {
       },
     },
   ];
-  const positionColumns =[
+  const positionColumns = [
     {
       title: "币种",
       dataIndex: "instId",
@@ -97,9 +122,13 @@ function App() {
       dataIndex: "posSide",
       render: (_, { posSide, side }) => {
         if (posSide === "long") {
-          return <div style={{ color: "green", whiteSpace: "nowrap" }}>做多</div>;
+          return (
+            <div style={{ color: "green", whiteSpace: "nowrap" }}>做多</div>
+          );
         } else if (posSide === "short") {
-          return <div style={{ color: "green", whiteSpace: "nowrap" }}>做空</div>;
+          return (
+            <div style={{ color: "green", whiteSpace: "nowrap" }}>做空</div>
+          );
         }
       },
     },
@@ -118,7 +147,7 @@ function App() {
         );
       },
     },
-  ]
+  ];
   const [recordData, setRecordData] = useState([]);
   const [curData, setCurData] = useState([]);
   const [curDataV2, setCurDataV2] = useState([]);
@@ -158,34 +187,40 @@ function App() {
       manual: true,
     }
   );
+  useRequest(
+    () => {
+      axios
+        .get("https://okx-info-service.vercel.app/api/positions", {
+          params: queryObj,
+        })
+        .then((res) => {
+          console.log(res?.data?.data, "kkkkkkk1111");
+          setCurData(res?.data?.data);
+        });
+      axios
+        .get("https://okx-info-service.vercel.app/api/positions-v2", {
+          params: queryObj,
+        })
+        .then((res) => {
+          console.log(res?.data?.data?.[0]?.posData, "kkkkkkk2222");
+          setCurDataV2(res?.data?.data?.[0]?.posData);
+        });
+    },
+    {
+      pollingInterval: 10 * 1000,
+    }
+  );
   useEffect(() => {
     if (shouldPollingInterval) {
       run();
     }
-    useRequest(() => {
-      axios
-      .get("https://okx-info-service.vercel.app/api/positions", {
-        params: queryObj
-      })
-      .then((res) => {
-        console.log(res?.data?.data, "kkkkkkk1111");
-        setCurData(res?.data?.data);
-      });
-      axios
-        .get("https://okx-info-service.vercel.app/api/positions-v2", {
-        params: queryObj
-      })
-      .then((res) => {
-        console.log(res?.data?.data?.[0]?.posData, "kkkkkkk2222");
-        setCurDataV2(res?.data?.data?.[0]?.posData);
-      });
-    }, {
-      pollingInterval: 10 * 1000
-    })
     axios
-      .get("https://okx-info-service.vercel.app/api/history-positions?limit=100", {
-        params: queryObj
-      })
+      .get(
+        "https://okx-info-service.vercel.app/api/history-positions?limit=100",
+        {
+          params: queryObj,
+        }
+      )
       .then((res) => {
         console.log(res?.data?.data, "238938988");
         setRecordData(res?.data?.data);
