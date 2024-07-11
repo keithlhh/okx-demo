@@ -54,23 +54,16 @@ function App() {
     {
       title: "开仓均价",
       dataIndex: "openAvgPx",
-      render: (_) => {
-        return Number(_).toFixed(2)
-      }
     },
     {
       title: "平仓均价",
       dataIndex: "closeAvgPx",
-      render: (_) => {
-        return Number(_).toFixed(2)
-      }
     },
     {
       title: "收益",
       dataIndex: "closeUplRatio",
-      render: (_, {lever}) => {
-        let ratio = Number(_).toFixed(2) * Number(lever).toFixed(2);
-        ratio = Math.floor(ratio*100)/100
+      render: (ratio) => {
+        ratio = Math.floor(ratio*10000)/100
         if (ratio >= 0) {
           return <div style={{ color: "green", whiteSpace: 'nowrap' }}>{ratio}%</div>;
         } else {
