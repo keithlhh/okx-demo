@@ -19,17 +19,20 @@ function App() {
     },
     {
       title: "币种",
-      dataIndex: "baseName",
+      dataIndex: "instId",
+      render: (_, { instId }) => {
+        return instId.split("-")[0];
+      },
     },
     {
       title: "类型",
       dataIndex: "side",
       render: (_, { posSide, side }) => {
-        if (posSide === "long" && side === "buy") {
+        if (posSide === "long") {
           return <div style={{ color: "green", whiteSpace: 'nowrap' }}>做多</div>;
         } else if (posSide === "long" && side === "sell") {
           return <div style={{ color: "blue", whiteSpace: 'nowrap' }}>平多</div>;
-        } else if ((posSide === "short") && side === "sell") {
+        } else if (posSide === "short") {
           return <div style={{ color: "red", whiteSpace: 'nowrap' }}>做空</div>;
         } else if ((posSide === "short") && side === "buy") {
           return <div style={{ color: "blue", whiteSpace: 'nowrap' }}>平空</div>;
@@ -39,8 +42,31 @@ function App() {
       },
     },
     {
-      title: "均价",
-      dataIndex: "avgPx",
+      title: "开仓均价",
+      dataIndex: "openAvgPx",
+      render: (_) => {
+        return Number(_).toFixed(2)
+      }
+    },
+    {
+      title: "平仓均价",
+      dataIndex: "closeAvgPx",
+      render: (_) => {
+        return Number(_).toFixed(2)
+      }
+    },
+    {
+      title: "收益",
+      dataIndex: "closeUplRatio",
+      render: (_, {lever}) => {
+        let ratio = Number(_).toFixed(2) * Number(lever).toFixed(2);
+        ratio = Math.floor(ratio*100)/100
+        if (ratio >= 0) {
+          return <div style={{ color: "green", whiteSpace: 'nowrap' }}>{ratio}%</div>;
+        } else {
+          return <div style={{ color: "red", whiteSpace: 'nowrap' }}>{ratio}%</div>;
+        }
+      }
     },
     {
       title: "时间",
@@ -150,7 +176,7 @@ function App() {
         setCurDataV2(res?.data?.data?.[0]?.posData);
       });
     axios
-      .get("https://okx-info-service.vercel.app/api/trade-records?limit=100", {
+      .get("https://okx-info-service.vercel.app/api/history-positions?limit=100", {
         params: queryObj
       })
       .then((res) => {
