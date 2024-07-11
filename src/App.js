@@ -162,7 +162,8 @@ function App() {
     if (shouldPollingInterval) {
       run();
     }
-    axios
+    useRequest(() => {
+      axios
       .get("https://okx-info-service.vercel.app/api/positions", {
         params: queryObj
       })
@@ -178,6 +179,9 @@ function App() {
         console.log(res?.data?.data?.[0]?.posData, "kkkkkkk2222");
         setCurDataV2(res?.data?.data?.[0]?.posData);
       });
+    }, {
+      pollingInterval: 10 * 1000
+    })
     axios
       .get("https://okx-info-service.vercel.app/api/history-positions?limit=100", {
         params: queryObj
