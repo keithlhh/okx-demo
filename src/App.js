@@ -19,11 +19,11 @@ function App() {
       render: (_, { instId }) => {
         const coionType = instId.split("-")[0];
         if (coionType === "BTC") {
-          return <div>🦞{coionType}</div>
+          return <div style={{display: 'flex'}}><div style={{width: 20}}>🦞</div>{coionType}</div>
         } else if (coionType === "ETH") {
-          return <div>🦀️{coionType}</div>
+          return <div style={{display: 'flex'}}><div style={{width: 20}}>🦀️</div>{coionType}</div>
         } else {
-          return <div>{coionType}</div>;
+          return <div style={{display: 'flex'}}><div style={{width: 20}}></div>{coionType}</div>;
         }
       },
     },
