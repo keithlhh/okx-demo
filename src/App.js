@@ -264,7 +264,6 @@ function App() {
         columns={columns}
         dataSource={recordData}
       />
-      <div style={{ paddingBottom: 100 }}>{JSON.stringify(curData)}</div>
     </div>
   );
 }
