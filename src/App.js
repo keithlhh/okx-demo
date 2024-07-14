@@ -135,9 +135,9 @@ function App() {
     },
     {
       title: "仓位",
-      dataIndex: "pos",
-      render: (_) => {
-        return _ ? (Number(_).toFixed(2) * 100 + "%") : "-";
+      dataIndex: "posSpace",
+      render: (_, { lever }) => {
+        return _ ? (Number(_ / lever).toFixed(2) * 100 + "%") : "-";
       },
     },
     {
