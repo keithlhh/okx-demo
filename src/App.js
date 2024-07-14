@@ -49,6 +49,7 @@ function App() {
         return Number(_);
       },
     },
+    
     {
       title: "类型",
       dataIndex: "side",
@@ -133,8 +134,31 @@ function App() {
       },
     },
     {
+      title: "仓位",
+      dataIndex: "pos",
+      render: (_) => {
+        return _ ? (Number(_).toFixed(2) * 100 + "%") : "-";
+      },
+    },
+    {
       title: "均价",
       dataIndex: "avgPx",
+    },
+    {
+      title: "收益",
+      dataIndex: "uplRatio",
+      render: (ratio) => {
+        ratio = Math.floor(ratio * 10000) / 100;
+        if (ratio >= 0) {
+          return (
+            <div style={{ color: "green", whiteSpace: "nowrap" }}>{ratio}%</div>
+          );
+        } else {
+          return (
+            <div style={{ color: "red", whiteSpace: "nowrap" }}>{ratio}%</div>
+          );
+        }
+      },
     },
     {
       title: "时间",
